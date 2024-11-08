@@ -1,6 +1,6 @@
 def call(String Project, String ImageTag, String dockerhubuser){
-  docker.withRegistry('https://registry.example.com', 'docker-hub') {
-      echo 'Successfully logged into Docker Hub'
-      sh "docker push ${dockerhubuser}/${Project}:${ImageTag}"
-    }
- }
+  withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhubuser')]) {
+      sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
+  }
+  sh "docker push ${dockerhubuser}/${Project}:${ImageTag}"
+}
